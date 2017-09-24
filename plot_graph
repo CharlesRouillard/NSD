@@ -1,0 +1,7 @@
+set terminal png
+set output 'degree_dist.png'
+set title 'Degree Distribution'
+set xlabel 'Degree'
+set ylabel 'Number of nodes'
+set logscale xy
+plot "degree.txt" with linespoints
