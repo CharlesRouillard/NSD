@@ -44,9 +44,12 @@ public class EdgesList {
 			}
 			br.close();
 			
-			for(int i = 0;i<al.size();i++) {
+			/*print only the first 20th lines*/
+			for(int i = 0;i<20;i++) {
 				System.out.println(al.get(i));
 			}
+			
+			System.out.println("Only 20 lines printed...");
 		}
 	}
 }

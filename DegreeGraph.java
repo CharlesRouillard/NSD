@@ -55,11 +55,16 @@ public class DegreeGraph {
 					}
 				}
 				
-				/*Iterate through the HashMap and print the degree of each node on the standard output*/
+				/*Iterate through the HashMap and print the degree of each node on the standard output, only 20 lines max*/
+				int i = 0;
 				for(Map.Entry<String, Integer> entry : hm.entrySet()) {
-					System.out.println("The node " + entry.getKey() + " has a degree of " + entry.getValue());
+					if(i<20)
+						System.out.println("The node " + entry.getKey() + " has a degree of " + entry.getValue());
+					else
+						break;
+					i++;
 				}
-				
+				System.out.println("Only 20 lines printed...");
 			} 
 			catch (IOException e) {
 				e.printStackTrace();

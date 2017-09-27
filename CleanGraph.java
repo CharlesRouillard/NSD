@@ -10,7 +10,6 @@ import java.util.HashSet;
  * @authors ZEGHLACHE Adel & ROUILLARD Charles
  *
  */
-
 public class CleanGraph {
 	
 	/**
