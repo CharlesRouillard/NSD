@@ -1,3 +1,5 @@
+package dfs_bfs;
+
 import java.io.*;
 import java.util.*;
 
@@ -5,19 +7,24 @@ public class Bfs {
 	public static int nb = 0;
 	
 	private String file;
-	private ArrayList<Integer>[] adjacency;
+	private ArrayList<Integer>[] adj;
 	private HashMap<Integer,Boolean> hm;
 	private HashSet<Integer> hs;
 	private HashMap<Integer,Integer> distances;
 	private ArrayList<Integer> fifo;
 	
 	
+	@SuppressWarnings("unchecked")
 	public Bfs(String file) throws IOException {
 		this.file = file;
 		this.setNb(file);
 		
-		this.adjacency = this.adjacency(this.file);
-		this.hm = this.mark();
+		this.adj = (ArrayList<Integer>[]) new ArrayList[nb+1];
+		this.adjacency(this.file,this.adj);
+		
+		this.hm = new HashMap<Integer,Boolean>();
+		this.mark(this.hm);
+		
 		this.hs = this.getNodes(file);
 		this.distances = new HashMap<Integer,Integer>();
 		this.fifo = new ArrayList<Integer>();
@@ -41,11 +48,8 @@ public class Bfs {
 		br.close();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ArrayList<Integer>[] adjacency(String file) throws IOException{
-		ArrayList<Integer>[] al;
-		al = (ArrayList<Integer>[]) new ArrayList[nb+1];
-		
+	
+	public void adjacency(String file, ArrayList<Integer>[] al) throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		String[] tab;
@@ -70,15 +74,12 @@ public class Bfs {
 			e.printStackTrace();
 		}
 		br.close();
-		return al;
 	}
 	
-	public HashMap<Integer,Boolean> mark(){
-		HashMap<Integer,Boolean> hm = new HashMap<Integer,Boolean>();
+	public void mark(HashMap<Integer,Boolean> hm){
 		for(int i = 1;i<=nb;i++){
 			hm.put(i, false);
 		}
-		return hm;
 	}
 	
 	public HashSet<Integer> getNodes(String file) throws IOException {
@@ -116,7 +117,7 @@ public class Bfs {
 			n = this.fifo.get(0);
 			this.fifo.remove(0);
 			
-			for(int v : this.adjacency[n]){
+			for(int v : this.adj[n]){
 				if(this.distances.get(v) == null)
 					this.distances.put(v, this.distances.get(n)+1);
 				
@@ -141,7 +142,7 @@ public class Bfs {
 			this.hs.remove(n);
 			S.add(n);
 			
-			for(int v : this.adjacency[n]){
+			for(int v : this.adj[n]){
 				if(!this.hm.get(v)){
 					this.fifo.add(v);
 					this.hm.put(v, true);
@@ -174,7 +175,7 @@ public class Bfs {
 				
 				Bfs bfs = new Bfs(file);
 				//do it twice to find the diameter
-				for(int i = 0;i<2;i++) {
+				for(int i = 0;i<3;i++) {
 					bfs.launch(node);
 					distNodeMax = Collections.max(bfs.distances.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey();
 					diameter = Math.max(diameter,bfs.distances.get(distNodeMax));
