@@ -6,12 +6,13 @@ import java.util.*;
  * @author ZEGHLACHE Adel & ROUILLARD Charles
  *
  */
-public class Bfs {
+public class BfsDiameter{
 	public static int nb = 0;
 	
 	private String file;
 	private ArrayList<Integer>[] neighbor;
 	private boolean[] mark;
+	private int[] distances;
 	private ArrayList<Integer> fifo;
 	
 	/**
@@ -20,7 +21,7 @@ public class Bfs {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public Bfs(String file) throws IOException {
+	public BfsDiameter(String file) throws IOException {
 		this.file = file;
 		this.setNb(file);
 		
@@ -29,6 +30,8 @@ public class Bfs {
 		
 		this.mark = new boolean[nb+1];
 		this.markNode(this.mark);
+		
+		this.distances = new int[nb+1];
 		
 		this.fifo = new ArrayList<Integer>();
 	}
@@ -104,26 +107,25 @@ public class Bfs {
 	 * @param node
 	 */
 	public void launch(int node) {
-		int n = 0,i = 0;
+		int n = 0;
 		
 		this.fifo.add(node);
 		this.mark[node] = true;
+		this.distances[node] = 0;
 		
-		while(!fifo.isEmpty() && i<20){
-			
+		while(!fifo.isEmpty()){
 			n = this.fifo.get(0);
 			this.fifo.remove(0);
 			
-			
-			System.out.println(n);
-			
 			for(int v : this.neighbor[n]){
+				if(this.distances[v] == 0)
+					this.distances[v] = this.distances[n]+1;
+				
 				if(!this.mark[v]){
 					this.fifo.add(v);
 					this.mark[v] = true;
 				}
 			}
-			i++;
 		}
 	}
 	
@@ -134,10 +136,26 @@ public class Bfs {
 		else{
 			String file = args[0];
 			int node = Integer.parseInt(args[1]);
+			
+			int distNodeMax = 0,diameter = 0;
 				
-			Bfs bfs = new Bfs(file);
-			bfs.launch(node);
-			System.out.println("Done. Printed only 20 first nodes");
+			/*Found the diameter*/
+			BfsDiameter bfs = new BfsDiameter(file);
+			
+			//do it twice to find the diameter
+			for(int i = 0;i<3;i++) {
+				bfs.launch(node);
+				distNodeMax = Arrays.stream(bfs.distances).max().getAsInt();
+				diameter = Math.max(diameter,distNodeMax);
+				
+				for(int j=0;j<bfs.distances.length;j++) {
+					if(bfs.distances[j] == distNodeMax)
+						node = j;
+				}
+				
+				bfs = new BfsDiameter(file);
+			}
+			System.out.println("diameter found for the connected component associated with the node " + args[1] + " : " + diameter);
 		}
 	}
 }
