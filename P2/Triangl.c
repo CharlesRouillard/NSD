@@ -11,8 +11,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "qsort.h"
+#include "count.h"
 #define new_max(x,y) ((x) >= (y)) ? (x) : (y)
 
+struct Edge {
+   int src;
+   int dest;
+};
 int main(int argc, char* argv[])
 {
     char const* const fileName = argv[1];
@@ -21,9 +27,11 @@ int main(int argc, char* argv[])
 
     int src, dest;
     int nb_nodes = 0;
+    int nb_edges = 0;
     int * tabdegres;
     int size_tabdegres=10;
     int i = 0;
+
     tabdegres = calloc ( 10 , sizeof(int) );
 
     printf("Calculating degrees...\n");
@@ -47,11 +55,12 @@ int main(int argc, char* argv[])
         }
         //MAJ DEGRES
         tabdegres[src]++;
-        tabdegres[dest]++;
+         tabdegres[dest]++;
+         nb_edges++;
     }
 
     printf("Building the Adjancy List...\n");
-
+    //struct Edge Edges[nb_edges];
     int ** adjancy_list;
     int j;
     adjancy_list = calloc((nb_nodes+1), sizeof(int *));
@@ -63,7 +72,7 @@ int main(int argc, char* argv[])
     }
 
     rewind(file);
-
+    j = 0;
     while (fgets(line, sizeof(line), file)) {
         char *token;
         token = strtok(line, " ");
@@ -85,23 +94,41 @@ int main(int argc, char* argv[])
                     break;
                 }
         }
+        //Edges[j].src=src;
+        //Edges[j].dest=dest;
+        j++;
+
     }
 
-/*
-    for(i = 0; i<=nb_nodes;i++){
-    	printf("%d => ", i);
-    	for(j=0; j<tabdegres[i]; j++){
-    		printf(" %d :",adjancy_list[i][j]);
-    	}
-    	printf("\n");
+    // Sorting ...
+    for(i=0; i<=nb_nodes;i++){
+    	if(adjancy_list[i]!=0)
+    		quickSort(adjancy_list[i],0,tabdegres[i]-1);
     }
-*/
+
+
+    //Calculating number of triangles
+    rewind(file);
+    int nb_triangles=0;
+    while (fgets(line, sizeof(line), file)) {
+        char *token;
+        token = strtok(line, " ");
+        if(token[0]=='%')
+        	continue;
+        src = atoi(token);
+        token = strtok(NULL, " ");
+        dest = atoi(token);
+
+        // We delete nodes in the intersect function
+        int tmp = intersect(adjancy_list[src], adjancy_list[dest], tabdegres[src], tabdegres[dest],src,dest);
+        nb_triangles+=tmp;
+
+    }
+
+    printf("Nb of triangles: %d\n", nb_triangles);
 // {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-    printf("max : %d\n", nb_nodes);
-    printf("size tab degres : %d", size_tabdegres);
 
     fclose(file);
-
     free(adjancy_list);
     free(tabdegres);
     return 0;
