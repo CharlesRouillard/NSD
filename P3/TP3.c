@@ -2,7 +2,7 @@
  * TP3.c
  *
  *  Created on: 7 oct. 2017
- *      Author: Charles
+ *      Author: ZEGHLACHE Adel & ROUILLARD Charles
  */
 
 #include <stdio.h>
@@ -134,8 +134,6 @@ int main(int argc, char* argv[]) {
     t = atoi(argv[2]);
 
     for(i=0;i<t;i++){
-    	/*printf("%d\n",i);
-    	fflush(stdout);*/
     	ProdMATVect(adjancy_list,deg_out,nb_nodes, P);
 
         for(j=0 ;j<=nb_nodes; j++){
@@ -144,20 +142,6 @@ int main(int argc, char* argv[]) {
 
         normalize(P, nb_nodes);
     }
-
-    /*printf("done\n");
-    fflush(stdout);*/
-
-    /*for(i=0; i < nb_nodes+1; i++) {
-		if(deg_out[i]!=0){
-			free(adjancy_list[i]);
-			for ( j = 0; j < 2; j++ )
-				free(adjancy_list[i][j]);
-		}
-	}*/
-
-    /*printf("flush done\n");
-	fflush(stdout);*/
 
     for(i = 1;i<=nb_nodes;i++){
     	if(P[i] > valMax){
@@ -176,6 +160,7 @@ int main(int argc, char* argv[]) {
     free(P);
     free(deg_out);
     free(deg_in);
+    free(adjancy_list);
 
 	return EXIT_SUCCESS;
 }
