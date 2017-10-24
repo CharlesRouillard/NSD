@@ -1,30 +1,40 @@
+package kcore;
 
 public class BigNode {
-	private int node;
+	private int number;
 	private int c;
 	private int eta;
-	private int degree;
+	private boolean delete;
+	//private int degree;
 	
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setDelete(boolean delete) {
+		this.delete = delete;
+	}
+
 	public BigNode() {
-		this.node = 0;
+		this.number = 0;
 		this.c = 0;
 		this.eta = 0;
-		this.degree = 0;
+		//this.degree = 0;
 	}
 	
-	public BigNode(int number, int c, int eta, int degree) {
-		this.node = number;
+	public BigNode(int number, int c, int eta) {
+		this.number = number;
 		this.c = c;
 		this.eta = eta;
-		this.degree = degree;
+		//this.degree = degree;
 	}
 
 	public int getNumber() {
-		return node;
+		return number;
 	}
 
 	public void setNumber(int number) {
-		this.node = number;
+		this.number = number;
 	}
 
 	public int getC() {
@@ -43,16 +53,23 @@ public class BigNode {
 		this.eta = eta;
 	}
 
-	public int getDegree() {
+	@Override
+	public String toString() {
+		return "BigNode [node=" + number + ", c=" + c + ", eta=" + eta + "]";
+	}
+
+	/*public int getDegree() {
 		return degree;
 	}
 
 	public void setDegree(int degree) {
 		this.degree = degree;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "BigNode [node=" + node + ", c=" + c + ", eta=" + eta + ", degree=" + degree + "]";
-	}
+	}*/
+	
+	
 }
