@@ -1,13 +1,3 @@
-/*
- ============================================================================
- Name        : NSD_TP5.c
- Author      : Charles
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -134,9 +124,7 @@ void freeheap(bheap *heap){
 }
 
 void Mkscore(edge *edges,int size,int nb_nodes,int t){
-
-	//printf("%d\n",size);
-	int *r = calloc(nb_nodes, sizeof(int));
+	int *r = calloc((nb_nodes+1), sizeof(int));
 	float *finalr = calloc((nb_nodes), sizeof(float));
 	int i,cpt = 0,size_densest = 0;
 	float max_score = 0.;
@@ -161,13 +149,16 @@ void Mkscore(edge *edges,int size,int nb_nodes,int t){
 	for(i = 1;i<=nb_nodes;i++){
 		if(r[i] != 0){
 			float d = (float)r[i]/t;
-			printf("score du noeud %d : %f\n",i,d);
-			finalr[i] = d;
-			if(max_score < d){
-				max_score = d;
+			float near = roundf(d);
+			//printf("score du noeud %d : %f\n",i,near);
+			finalr[i] = near;
+			if(max_score < near){
+				max_score = near;
 			}
 		}
 	}
+
+	//printf("%1.f\n",max_score);
 
 	for(i = 1;i<=nb_nodes;i++){
 		if(finalr[i] != 0.){
@@ -177,6 +168,7 @@ void Mkscore(edge *edges,int size,int nb_nodes,int t){
 		}
 	}
 	printf("size of the densest subgraph : %d\n",size_densest);
+	printf("Done mkscore\n");
 }
 
 void anomalous(){
@@ -292,17 +284,14 @@ int main(int argc, char** argv){
 		printf("Usage : %s <filename>");
 		return -1;
 	}
-	/*char const* const fileName = argv[1];
+	char const* const fileName = argv[1];
     FILE* file = fopen(fileName, "r");
     char line[256];
     int src, dest,nb_nodes = 0,nb_edges = 0,ptr = 0,* tabdegres,size_tabdegres=10,i = 0,j= 0,* isDeleted,**adjancy_list;
     edge *edges;
-
     tabdegres = calloc (10 , sizeof(int));
-
     printf("Calculating degrees...\n");
     fflush(stdout);
-
     while (fgets(line, sizeof(line), file)) {
         char *token;
         token = (char *)strtok(line, "\t");
@@ -312,7 +301,6 @@ int main(int argc, char** argv){
         token = (char *)strtok(NULL, "\t");
         dest = atoi(token);
         nb_nodes = new_max(nb_nodes, new_max(src,dest));
-
         if(nb_nodes >= size_tabdegres){
         	int old_size = size_tabdegres;
         	tabdegres = realloc (tabdegres, (nb_nodes+1) * sizeof(int) );
@@ -326,20 +314,15 @@ int main(int argc, char** argv){
         tabdegres[dest]++;
         nb_edges++;
     }
-
     printf("Building the Adjancy List...\n");
     fflush(stdout);
-
     adjancy_list = calloc((nb_nodes+1), sizeof(int *));
     edges = malloc((nb_edges) * sizeof(edge));
-
-
     // We allocate memory for each neighborhood
     for(i=0; i <= nb_nodes; i++) {
     	if(tabdegres[i]!=0)
     		adjancy_list[i] = calloc ( tabdegres[i] , sizeof(int) );
     }
-
     rewind(file);
     j = 0;
     while (fgets(line, sizeof(line), file)) {
@@ -350,14 +333,11 @@ int main(int argc, char** argv){
         src = atoi(token);
         token = strtok(NULL, "\t");
         dest = atoi(token);
-
         //pour Mkscore
         edge e;
 		e.i = src;
 		e.j = dest;
 		edges[ptr++] = e;
-
-
         //MAJ Voisins
         for(i=0; i < tabdegres[src]; i++) {  // ajouter dest dans le voisinage de src
 			if(adjancy_list[src][i]==0){
@@ -373,7 +353,6 @@ int main(int argc, char** argv){
         }
        j++;
     }
-
     keyvalue kv;
 	bheap* heap=construct(nb_nodes);
 	int size_heap = 0;
@@ -385,19 +364,16 @@ int main(int argc, char** argv){
 			insert(heap,kv);
 		}
 	}
-
 	//######### CORE DECOMPOSITION ########
 	i = nb_nodes;
 	int c = 0;
 	keyvalue k;
 	int v;
     isDeleted = calloc ( nb_nodes , sizeof(int) );
-
     while(size_heap!=0){
 		k = popmin(heap);
 		v = k.key;
 		c = new_max(c,k.value);
-
 		for(j=0;j<tabdegres[v];j++){
 			if(isDeleted[adjancy_list[v][j]]==0){
 				update(heap,adjancy_list[v][j],1);
@@ -407,19 +383,18 @@ int main(int argc, char** argv){
 		i--;
 		size_heap--;
 	}
-
     printf("mkscore\n");
-    fflush(stdout);*/
+    fflush(stdout);
 
-    //Mkscore(edges,nb_edges,nb_nodes,100);
-    anomalous();
+    Mkscore(edges,nb_edges,nb_nodes,100);
+    //anomalous();
 
     printf("done\n");
-    /*free(tabdegres);
+    free(tabdegres);
 	free(isDeleted);
 	free(adjancy_list);
 	free(edges);
-	freeheap(heap);*/
+	freeheap(heap);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
