@@ -1,146 +1,19 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
+#include "Kcore.h"
 
-#define new_max(x,y) ((x) >= (y)) ? (x) : (y)
-
-//key value pair
-typedef struct {
-	unsigned key;
-	unsigned value;
-} keyvalue;
-
-//heap datastructure
-typedef struct {
-	unsigned n_max;// max number of nodes.
-	unsigned n;// number of nodes.
-	unsigned *pt;// pointers to nodes.
-	keyvalue *kv;// (node,nck)
-} bheap;
-
-typedef struct {
-	unsigned i;
-	unsigned j;
-} edge;
-
-//constructing a min heap that can contain up to n_max elements
-bheap *construct(unsigned n_max){
-	unsigned i;
-	bheap *heap=malloc(sizeof(bheap));
-
-	heap->n_max=n_max;
-	heap->n=0;
-	heap->pt=malloc(n_max*sizeof(unsigned));
-	for (i=0;i<n_max;i++) heap->pt[i]=-1;
-	heap->kv=malloc(n_max*sizeof(keyvalue));
-	return heap;
-}
-
-//swap i with j
-void swap(bheap *heap,unsigned i, unsigned j) {
-	keyvalue kv_tmp=heap->kv[i];
-	unsigned pt_tmp=heap->pt[kv_tmp.key];
-	heap->pt[heap->kv[i].key]=heap->pt[heap->kv[j].key];
-	heap->kv[i]=heap->kv[j];
-	heap->pt[heap->kv[j].key]=pt_tmp;
-	heap->kv[j]=kv_tmp;
-}
-
-//bubble up operation (when decreasing a value)
-void bubble_up(bheap *heap,unsigned i) {
-	unsigned j=(i-1)/2;
-	while (i>0) {
-		if (heap->kv[j].value>heap->kv[i].value) {
-			swap(heap,i,j);
-			i=j;
-			j=(i-1)/2;
-		}
-		else break;
-	}
-}
-
-//bubble down operation (when increasing a value or extracting min)
-void bubble_down(bheap *heap) {
-	unsigned i=0,j1=1,j2=2,j;
-	while (j1<heap->n) {
-		j=( (j2<heap->n) && (heap->kv[j2].value<heap->kv[j1].value) ) ? j2 : j1 ;
-		if (heap->kv[j].value < heap->kv[i].value) {
-			swap(heap,i,j);
-			i=j;
-			j1=2*i+1;
-			j2=j1+1;
-			continue;
-		}
-		break;
-	}
-}
-
-//inserting element at the end and doing bubble up
-void insert(bheap *heap,keyvalue kv){
-	heap->pt[kv.key]=(heap->n)++;
-	heap->kv[heap->n-1]=kv;
-	bubble_up(heap,heap->n-1);
-}
-
-//decrease the value of the key "key" by delta and maintaining heap using bubble up
-void update(bheap *heap,unsigned key,unsigned delta){
-	unsigned i=heap->pt[key];
-	if (i!=-1){
-		((heap->kv[i]).value)-=delta;
-		bubble_up(heap,i);
-	}
-}
-
-//extracting minimum and reforming heap
-keyvalue popmin(bheap *heap){
-	keyvalue min=heap->kv[0];
-	heap->pt[min.key]=-1;
-	heap->kv[0]=heap->kv[--(heap->n)];
-	heap->pt[heap->kv[0].key]=0;
-	bubble_down(heap);
-	return min;
-}
-
-//Building the heap structure with (key,value)=(i,val[i]) for each node
-bheap* mkheap(unsigned* val,unsigned n){
-	unsigned i;
-	keyvalue kv;
-	bheap* heap=construct(n);
-	for (i=0;i<n;i++){
-		kv.key=i;
-		kv.value=val[i];
-		insert(heap,kv);
-	}
-	return heap;
-}
-
-//freeing memory
-void freeheap(bheap *heap){
-	free(heap->pt);
-	free(heap->kv);
-	free(heap);
-}
-
-void Mkscore(edge *edges,int size,int nb_nodes,int t){
+int Mkscore(edge *edges,int size,int nb_nodes,int t){
 	int *r = calloc((nb_nodes+1), sizeof(int));
-	float *finalr = calloc((nb_nodes), sizeof(float));
-	int i,cpt = 0,size_densest = 0;
+	float *finalr = calloc((nb_nodes+1), sizeof(float));
+	int i,cpt = 0,size_densest = 0,Mh = 0,Nh = 0;
 	float max_score = 0.;
 
 	while(cpt < t){
-		//printf("ITERATION NUMERO %d\n",(cpt+1));
 		for(i = 0;i<size;i++){
 			edge e = edges[i];
-			//printf("edge %d--%d r[%d] = %d / r[%d] = %d\n",e.i,e.j,e.i,r[e.i],e.j,r[e.j]);
 			if(r[e.i] <= r[e.j]){
 				r[e.i]++;
-				//printf("r[%d]++\n",e.i);
 			}
 			else{
 				r[e.j]++;
-				//printf("r[%d]++\n",e.j);
 			}
 		}
 		cpt++;
@@ -150,15 +23,12 @@ void Mkscore(edge *edges,int size,int nb_nodes,int t){
 		if(r[i] != 0){
 			float d = (float)r[i]/t;
 			float near = roundf(d);
-			//printf("score du noeud %d : %f\n",i,near);
 			finalr[i] = near;
 			if(max_score < near){
 				max_score = near;
 			}
 		}
 	}
-
-	//printf("%1.f\n",max_score);
 
 	for(i = 1;i<=nb_nodes;i++){
 		if(finalr[i] != 0.){
@@ -167,14 +37,35 @@ void Mkscore(edge *edges,int size,int nb_nodes,int t){
 			}
 		}
 	}
-	printf("size of the densest subgraph : %d\n",size_densest);
-	printf("Done mkscore\n");
+
+	Nh = size_densest;
+
+	for(i = 0;i<size;i++){
+		edge e = edges[i];
+		if(finalr[e.i] == max_score && finalr[e.j] == max_score){
+			Mh++;
+		}
+	}
+
+	float add = (float)Mh/Nh;
+	float ed = (float)(2*Mh) / (Nh*(Nh-1));
+
+	printf("==============Mkscore of a densest prefix for a non increasing density score ordering==============\nMh = %d, Nh = %d\nAverage degree density : %f\nEdge density = %f\nsize %d\n\n",Mh,Nh,add,ed,size_densest);
+	fflush(stdout);
+
+	return EXIT_SUCCESS;
 }
 
-void anomalous(){
-	char const* const graph = "data/lj.txt";
-	FILE* fileGraph = fopen(graph, "r");
-	FILE* finalFile = fopen("data/final.txt", "w+");
+int anomalous(char const* const coAuthors){
+	printf("anomalous\n");
+	fflush(stdout);
+
+	FILE* fileGraph = fopen(coAuthors, "r");
+	if(fileGraph == NULL){
+		printf("Error while opening %s\n",coAuthors);
+		return -1;
+	}
+	FILE* finalFile = fopen("final.txt", "w+");
 
 	char line[256];
 	int src,dest,nb_nodes = 0,* tabdegres,size_tabdegres=10,i = 0,j= 0,* isDeleted,**adjancy_list;
@@ -184,11 +75,11 @@ void anomalous(){
 	/*read the co authors links and make kcore*/
 	while (fgets(line, sizeof(line), fileGraph)) {
 		char *token;
-		token = (char *)strtok(line, "\t");
+		token = (char *)strtok(line, " ");
 		if(token[0]=='%')
 			continue;
 		src = atoi(token);
-		token = (char *)strtok(NULL, "\t");
+		token = (char *)strtok(NULL, " ");
 		dest = atoi(token);
 
 		nb_nodes = new_max(nb_nodes, new_max(src,dest));
@@ -214,11 +105,11 @@ void anomalous(){
 	rewind(fileGraph);
 	while (fgets(line, sizeof(line), fileGraph)) {
 		char *token;
-		token = strtok(line, "`\t");
+		token = strtok(line, " ");
 		if(token[0]=='%')
 			continue;
 		src = atoi(token);
-		token = strtok(NULL, "\t");
+		token = strtok(NULL, " ");
 		dest = atoi(token);
 
 		for(i=0; i < tabdegres[src]; i++) {
@@ -271,27 +162,41 @@ void anomalous(){
 		size_heap--;
 	}
 
-	printf("done anomalous\n");
+	printf("==============Graph mining with k-core==============\nFile used : %s\nfile 'final.txt' created. run 'gnuplot plot.txt' to create the plot of the google scholar dataset in png format\n\n",coAuthors);
+	fflush(stdout);
+
+	fclose(fileGraph);
+	fclose(finalFile);
 	free(tabdegres);
 	free(isDeleted);
 	free(adjancy_list);
 	freeheap(heap);
+
+	return EXIT_SUCCESS;
 }
 
 int main(int argc, char** argv){
-
-	if(argc != 2){
-		printf("Usage : %s <filename>");
+	if(argc != 3){
+		printf("Usage : %s <filename of graph> <filename of the list of undirected co-authorship links of the google scholar dataset>",argv[0]);
 		return -1;
 	}
+
+	char const* const coAuthors = argv[2];
+
 	char const* const fileName = argv[1];
+	printf("File used : %s\n\n",fileName);
+	fflush(stdout);
+
     FILE* file = fopen(fileName, "r");
+    if(file == NULL){
+    	printf("Error while opening %s\n",fileName);
+    	return -1;
+    }
+
     char line[256];
     int src, dest,nb_nodes = 0,nb_edges = 0,ptr = 0,* tabdegres,size_tabdegres=10,i = 0,j= 0,* isDeleted,**adjancy_list;
     edge *edges;
     tabdegres = calloc (10 , sizeof(int));
-    printf("Calculating degrees...\n");
-    fflush(stdout);
     while (fgets(line, sizeof(line), file)) {
         char *token;
         token = (char *)strtok(line, "\t");
@@ -314,8 +219,6 @@ int main(int argc, char** argv){
         tabdegres[dest]++;
         nb_edges++;
     }
-    printf("Building the Adjancy List...\n");
-    fflush(stdout);
     adjancy_list = calloc((nb_nodes+1), sizeof(int *));
     edges = malloc((nb_edges) * sizeof(edge));
     // We allocate memory for each neighborhood
@@ -370,6 +273,7 @@ int main(int argc, char** argv){
 	keyvalue k;
 	int v;
     isDeleted = calloc ( nb_nodes , sizeof(int) );
+    int * pos_core = calloc ( nb_nodes , sizeof(int) );
     while(size_heap!=0){
 		k = popmin(heap);
 		v = k.key;
@@ -379,17 +283,58 @@ int main(int argc, char** argv){
 				update(heap,adjancy_list[v][j],1);
 			}
 		}
+
+		pos_core[v] = i;
+
 		isDeleted[v] = 1;
 		i--;
 		size_heap--;
 	}
-    printf("mkscore\n");
+
+    int * tab_haut = calloc ( nb_nodes , sizeof(int) );
+	int * tab_bas = calloc ( nb_nodes , sizeof(int) );
+	int somme_nav = 0;
+
+	for(i=1;i<=nb_nodes;i++){ // pour chaque noeud
+		int n_av = 0;
+		for(j=0;j<tabdegres[i];j++){ // pour chaque voisin
+			if(pos_core[i]>pos_core[adjancy_list[i][j]])
+				n_av++;
+		}
+		tab_haut[pos_core[i]-1]= n_av;
+
+	}
+
+	for(i=0;i<nb_nodes;i++){  // On remplie tab_bas
+		somme_nav +=tab_haut[i];
+		tab_bas[i] = somme_nav;
+	}
+
+	float * tab_ratios = calloc ( nb_nodes , sizeof(int) );
+	float best_ratio = 0;
+	int pos_best_ratio = 0;
+	float edge_density = 0;
+
+	for(i=0;i<nb_nodes;i++){
+		tab_ratios[i] = (float)tab_bas[i]/(i+1);
+		if(best_ratio<tab_ratios[i]){
+			best_ratio = tab_ratios[i];
+			edge_density = (float)(2*tab_bas[i])/((i+1)*(float)i);
+			pos_best_ratio = i+1;
+		}
+	}
+
+    printf("==============k-core decomposition of a densest core ordering prefix==============\nAverage degree density = %f\nEdge density = %f\nsize = %d\n\n",tab_ratios[pos_best_ratio-1],edge_density,pos_best_ratio);
     fflush(stdout);
 
-    Mkscore(edges,nb_edges,nb_nodes,100);
-    //anomalous();
+    anomalous(coAuthors);
 
-    printf("done\n");
+    Mkscore(edges,nb_edges,nb_nodes,100);
+
+    fclose(file);
+    free(tab_ratios);
+    free(tab_bas);
+    free(tab_haut);
     free(tabdegres);
 	free(isDeleted);
 	free(adjancy_list);

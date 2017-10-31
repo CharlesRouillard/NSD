@@ -1,0 +1,7 @@
+set terminal png
+set output 'anomalous.png'
+set title 'Anomalous node'
+set xlabel 'Degree'
+set ylabel 'Coreness'
+set logscale xy
+plot "final.txt" using 3:2 with point pt 7 notitle
