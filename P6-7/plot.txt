@@ -1,9 +1,0 @@
-set terminal png
-set output 'label_prog.png'
-set title 'label Propagation'
-set xlabel 'Node'
-set ylabel 'Label'
-set boxwidth 0.1
-set style fill solid
-set yrange [1:1158000]
-plot 'label.txt' using 2:xtic(1) with boxes notitle
