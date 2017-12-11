@@ -86,6 +86,7 @@ int main(int argc, char **argv){
 			}
 			writeFile << "\n";
 		}
+		cout << "File " << newF << " created." << endl;
  	}
  	else{
  		cout << "Error while reading the file" << endl;
