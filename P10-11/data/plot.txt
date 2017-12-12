@@ -1,0 +1,7 @@
+set terminal png
+set output 'distribution_inter_contact.png'
+set title 'Distribution of the Inter Contact Duration Time'
+set xlabel 'Inter contact duration time'
+set ylabel 'Number of inter contact'
+set logscale xy
+plot "distribution_inter_contact_duration_time.txt" using 1:2 smooth bezier notitle

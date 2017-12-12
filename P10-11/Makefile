@@ -5,7 +5,7 @@ CXXFLAGS= -O5 -Wall -std=c++11
 
 DIRSRC= ./src/
 
-EXEC=simpleMetrics normalise sortAndSplit interContact
+EXEC=simpleMetrics normalise sortAndSplit interContact averageDegree
 
 all: $(EXEC)
 
@@ -19,6 +19,9 @@ sortAndSplit: $(DIRSRC)SortAndSplit.cpp
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 interContact: $(DIRSRC)InterContact.cpp
+	$(CXX) -o $@ $^ $(CXXFLAGS)
+
+averageDegree: $(DIRSRC)AverageDegree.cpp
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 	
 clean:

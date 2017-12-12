@@ -84,6 +84,8 @@ int main(int argc, char **argv){
 
 	string filename(argv[1]),line;
 	ifstream readFile(filename);
+	ofstream writeFile("data/distribution_inter_contact_duration_time.txt");
+
 	vector<MyNode> list;
 	map<int,int> distrib;
 	map<int,int>::iterator it;
@@ -116,11 +118,16 @@ int main(int argc, char **argv){
 			}
 		}
 		for (it=distrib.begin(); it!=distrib.end(); it++)
-	    	cout << it->first << " => " << it->second << '\n';
+	    	writeFile << it->first << ' ' << it->second << endl;
 	 	}
  	else{
  		cout << "Error while reading the file" << endl;
  	}
+
+ 	list.clear();
+ 	distrib.clear();
+ 	readFile.close();
+ 	writeFile.close();
 
 	return EXIT_SUCCESS;
 }
