@@ -29,7 +29,7 @@ vector<string> split(string str){
 
 int main(int argc, char **argv){
 	if(argc != 2){
-		printf("Usage: %s <filename or path> \n",argv[0]);
+		cout << "Usage: " << argv[0] << " <filename>" << endl;
 		return -1;
 	}
 
@@ -38,14 +38,14 @@ int main(int argc, char **argv){
 
 	if(readFile){
 		string line;
-		int minTime(0);
+		int minTime(-1);
 
 		while(getline(readFile,line)){
 			vector<string> elts(split(line));
 			for(unsigned int i = 0;i<elts.size();i++){
 				int ts(atoi(elts[2].c_str()));
 
-				if(minTime == 0)
+				if(minTime == -1)
 					minTime = ts;
 				else
 					minTime = min(minTime,ts);

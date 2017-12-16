@@ -31,7 +31,7 @@ bool sortFinal(vector<string> i, vector<string> j){return atoi(i[0].c_str()) < a
 
 int main(int argc, char **argv){
 	if(argc != 2){
-		printf("Usage: %s <filename or path> \n",argv[0]);
+		cout << "Usage: " << argv[0] << " <filename>" << endl;
 		return -1;
 	}
 

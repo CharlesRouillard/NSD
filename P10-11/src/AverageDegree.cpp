@@ -29,22 +29,58 @@ vector<string> split(string str){
 
 int main(int argc, char **argv){
 	if(argc != 2){
-		printf("Usage: %s <filename or path> \n",argv[0]);
+		cout << "Usage: " << argv[0] << " <filename>" << endl;
 		return -1;
 	}
 
 	string filename(argv[1]);
 	ifstream readFile(filename);
-
-
+	ofstream writeFile("data/datasets/average_degree.txt");
+	
 	if(readFile){
-		
+
+		int nbNodes(0);
+		string line;
+		while(getline(readFile,line)){
+			vector<string> elts(split(line));
+			nbNodes = max(nbNodes, max(atoi(elts[1].c_str()),atoi(elts[2].c_str())));
+		}
+
+		readFile.clear();
+		readFile.seekg(0,ios::beg);
+
+		set<int> mySet;
+		int degree(0),currentTime(0);
+		while(getline(readFile,line)){
+			vector<string> elts(split(line));
+			if(currentTime == atoi(elts[0].c_str())){
+				if(elts[3] == "C"){
+					degree += 2;
+				}
+				else{
+					degree -= 2;
+				}
+			}
+			else{
+				writeFile << currentTime << ' ' << ((double)degree/(double)nbNodes) << endl;
+				currentTime = atoi(elts[0].c_str());
+
+				if(elts[3] == "C"){
+					degree += 2;
+				}
+				else{
+					degree -= 2;
+				}
+			}
+		}
+		writeFile << currentTime << ' ' << ((double)degree/(double)nbNodes) << endl;
  	}
  	else{
  		cout << "Error while reading the file" << endl;
- 	}
+ 	}	
 
  	readFile.close();
+	writeFile.close();
 
 	return EXIT_SUCCESS;
 }

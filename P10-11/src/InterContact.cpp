@@ -32,17 +32,6 @@ class MyNode{
 	public:
 		MyNode(string pair, string state, int time) : m_pair(pair), m_state(state), m_time(time), m_index(0){}
 
-		/*bool Compare(const MyNode& m){
-			if(m.m_pair == m_pair && m.m_state == m_state && m.m_time == m_time){
-				return true;
-			}
-			return false;
-		}
-
-		bool operator == (const MyNode& m) const{
-			return Compare(m);
-		}*/
-
 		string getPair(){
 			return m_pair;
 		}
@@ -78,13 +67,13 @@ bool IsInList(vector<MyNode> list, MyNode& m){
 
 int main(int argc, char **argv){
 	if(argc != 2){
-		printf("Usage: %s <filename or path> \n",argv[0]);
+		cout << "Usage: " << argv[0] << " <filename>" << endl;
 		return -1;
 	}
 
 	string filename(argv[1]),line;
 	ifstream readFile(filename);
-	ofstream writeFile("data/distribution_inter_contact_duration_time.txt");
+	ofstream writeFile("data/datasets/distribution_inter_contact_duration_time.txt");
 
 	vector<MyNode> list;
 	map<int,int> distrib;
