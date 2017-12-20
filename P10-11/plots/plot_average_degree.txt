@@ -3,4 +3,4 @@ set output 'evolution_average_degree.png'
 set title 'Evolution of the average degree over time'
 set xlabel 'Time t'
 set ylabel 'Average degree for the time t'
-plot "../datasets/average_degree.txt" using 1:2 with point notitle
+plot "data/average_degree.txt" using 1:2 with point notitle

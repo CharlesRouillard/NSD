@@ -2,7 +2,7 @@
  * SimpleMetrics.cpp
  *
  *  Created on: 6 déc. 2017
- *      Author: Charles
+ *      Authors: ZEGHLACHE Adel & ROUILLARD Charles
  */
 
 #include <iostream>
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 
 	string filename(argv[1]);
 	ifstream readFile(filename);
-	ofstream writeFile("data/datasets/average_degree.txt");
+	ofstream writeFile("data/average_degree.txt");
 	
 	if(readFile){
 
@@ -53,6 +53,8 @@ int main(int argc, char **argv){
 		int degree(0),currentTime(0);
 		while(getline(readFile,line)){
 			vector<string> elts(split(line));
+
+			/*when we find a C it's the creation of a link, so the degree increase by 2, else it decrease by 2*/
 			if(currentTime == atoi(elts[0].c_str())){
 				if(elts[3] == "C"){
 					degree += 2;
@@ -73,11 +75,14 @@ int main(int argc, char **argv){
 				}
 			}
 		}
+		/*write the average degree for each timestamp*/
 		writeFile << currentTime << ' ' << ((double)degree/(double)nbNodes) << endl;
  	}
  	else{
  		cout << "Error while reading the file" << endl;
  	}	
+
+ 	cout << "File data/average_degree.txt created." << endl;
 
  	readFile.close();
 	writeFile.close();

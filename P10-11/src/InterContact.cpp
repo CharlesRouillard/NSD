@@ -2,7 +2,7 @@
  * SimpleMetrics.cpp
  *
  *  Created on: 6 déc. 2017
- *      Author: Charles
+ *      Authors: ZEGHLACHE Adel & ROUILLARD Charles
  */
 
 #include <iostream>
@@ -28,6 +28,7 @@ vector<string> split(string str){
 	return playerInfoVector;
 }
 
+/*here we create our own object with method to compute easily the inter contact*/
 class MyNode{
 	public:
 		MyNode(string pair, string state, int time) : m_pair(pair), m_state(state), m_time(time), m_index(0){}
@@ -55,6 +56,7 @@ class MyNode{
 		int m_index;
 };
 
+/*check if a MyNode object is in the vector. and the set the index of the MyNode*/
 bool IsInList(vector<MyNode> list, MyNode& m){
 	for(unsigned int i = 0;i<list.size();i++){
 		if(list[i].getPair() == m.getPair()){
@@ -73,7 +75,8 @@ int main(int argc, char **argv){
 
 	string filename(argv[1]),line;
 	ifstream readFile(filename);
-	ofstream writeFile("data/datasets/distribution_inter_contact_duration_time.txt");
+	ofstream writeFile("data/distrib_inter_contact.txt");
+	ofstream writeFileB("data/inter_contact.txt");
 
 	vector<MyNode> list;
 	map<int,int> distrib;
@@ -85,7 +88,7 @@ int main(int argc, char **argv){
 			string pair(elts[1] + ' ' + elts[2]);
 			string state(elts[3]);
 			int time(atoi(elts[0].c_str()));
-			MyNode m(pair,state,time);
+			MyNode m(pair,state,time);//Create a MyNode object
 
 			if(state.compare("S") == 0){
 				list.push_back(m);
@@ -94,7 +97,10 @@ int main(int argc, char **argv){
 				if(IsInList(list,m)){
 					int index(m.getIndex());
 					int interTime((m.getTime())-(list[index].getTime()));
-					//cout << "Pair (" << m.getPair() << ") - inter contact duration time = " << interTime << endl;
+
+					/*write the pair and the intercontact associated in the file*/
+					writeFileB << "Pair (" << m.getPair() << ") - inter contact duration time = " << interTime << endl;
+
 					it = distrib.find(interTime);
 					if(it != distrib.end()){
 						it->second = it->second + 1;
@@ -107,16 +113,21 @@ int main(int argc, char **argv){
 			}
 		}
 		for (it=distrib.begin(); it!=distrib.end(); it++)
+			/*write in anotther file each inter contact and the number of time we found this inter contact. Need for the plot distribution*/
 	    	writeFile << it->first << ' ' << it->second << endl;
 	 	}
  	else{
  		cout << "Error while reading the file" << endl;
  	}
 
+ 	cout << "File data/inter_contact.txt created. It contains the inter-contact duration time associated to each observed contact" << endl;
+ 	cout << "File data/distrib_inter_contact.txt created. It contains the ditribution of ther inter contact duration time" << endl;
+
  	list.clear();
  	distrib.clear();
  	readFile.close();
  	writeFile.close();
+ 	writeFileB.close();
 
 	return EXIT_SUCCESS;
 }

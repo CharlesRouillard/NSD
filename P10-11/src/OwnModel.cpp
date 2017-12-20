@@ -30,26 +30,19 @@ vector<string> split(string str){
 }
 
 int main(int argc, char **argv){
-	if(argc != 5){
-		cout << "Usage: " << argv[0] << " <number of node> <probability of creation of links> <probability of deletion of links> <number of time steps>" << endl;
+	if(argc != 3){
+		cout << "Usage: " << argv[0] << "" << endl;
 		return -1;
 	}
 
 	srand((time(0)));
 
-	ofstream writeFile("data/edge_markovian_trace.txt");
+	string filename(argv[1]);
+	ifstream readFile(filename);
 
-	/*read the parameters pass in args*/
-	int n(atoi(argv[1]));
+	ofstream writeFile("data/own_model_trace.txt");
 
-	string sp(argv[2]);
-	size_t sz;
-	float p(stod(sp,&sz));
-
-	sp = argv[3];
-	float d(stod(sp,&sz));
-
-	int ts(atoi(argv[4]));
+	int n(atoi(argv[2]));
 
 	vector<string> exist,dontExist,tmpV;
 	string s("");
@@ -64,9 +57,15 @@ int main(int argc, char **argv){
 		}
 	}
 
-
+	string line;
 	/*loop from 0 to timestamp given in args*/
-	for(int i = 0;i<ts;i++){
+	while(getline(readFile,line))
+	{
+		vector<string> elts(split(line));
+		size_t sz;
+		double p = stod(elts[1],&sz);
+		double d = stod(elts[2],&sz);
+
 		/*then read the list of nodes that does not exist*/
 		for(unsigned int x = 0;x<dontExist.size();x++){
 			float random = (float)rand() / (float)RAND_MAX;
@@ -74,7 +73,7 @@ int main(int argc, char **argv){
 				string tmp(dontExist.at(x));
 				dontExist.erase(dontExist.begin()+x);
 				tmpV.push_back(tmp);
-				writeFile << i << ' ' << tmp << " C" << endl; //write on the file every creation 
+				writeFile << elts[0] << ' ' << tmp << " C" << endl; //write on the file every creation 
 			}
 		}
 
@@ -85,7 +84,7 @@ int main(int argc, char **argv){
 				string tmp(exist.at(x));
 				exist.erase(exist.begin()+x);
 				dontExist.push_back(tmp);
-				writeFile << i << ' ' << tmp << " S" << endl; //write on the file every deletion 
+				writeFile << elts[0] << ' ' << tmp << " S" << endl; //write on the file every deletion 
 			}
 		}
 
@@ -96,7 +95,7 @@ int main(int argc, char **argv){
 		tmpV.clear();
 	}
 
-	cout << "File data/edge_markovian_trace.txt created" << endl;
+	cout << "File data/own_model_trace.txt created" << endl;
 
 	exist.clear();
 	dontExist.clear();

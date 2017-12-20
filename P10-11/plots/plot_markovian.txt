@@ -1,0 +1,6 @@
+set terminal png
+set output 'evolution_average_degree_markovian.png'
+set title 'Evolution of the average degree over time for the Edge Markovian Model'
+set xlabel 'Time t'
+set ylabel 'Average degree for the time t'
+plot "data/average_degree.txt" using 1:2 with point notitle

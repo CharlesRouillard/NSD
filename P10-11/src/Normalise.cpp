@@ -2,7 +2,7 @@
  * SimpleMetrics.cpp
  *
  *  Created on: 6 déc. 2017
- *      Author: Charles
+ *      Authors: ZEGHLACHE Adel & ROUILLARD Charles
  */
 
 #include <iostream>
@@ -52,6 +52,9 @@ int main(int argc, char **argv){
 			}
 		}
 
+		/*After the first read of the file, we obtain the minimum timestamp.
+		 We then read a second time the file and create new string line which will be the same but each timestamp will be the timestamp - the minimum time we found*/
+
 		readFile.clear();
 		readFile.seekg(0,ios::beg);
 
@@ -73,11 +76,14 @@ int main(int argc, char **argv){
  		cout << "Error while reading the file" << endl;
  	}
 
+ 	/*then we override the file by the new lines we have generated, and the file will be normalized*/
  	ofstream writeFile(argv[1]);
 
  	for(unsigned int i = 0;i<toWrite.size();i++){
  		writeFile << toWrite.at(i) << endl;
  	}
+
+ 	cout << "File normalized." << endl;
 
  	readFile.close();
  	writeFile.close();

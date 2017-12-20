@@ -2,7 +2,7 @@
  * SimpleMetrics.cpp
  *
  *  Created on: 6 déc. 2017
- *      Author: Charles
+ *      Authors: ZEGHLACHE Adel & ROUILLARD Charles
  */
 
 #include <iostream>
@@ -15,6 +15,7 @@
 
 using namespace std;
 
+/*method use in every program, to split the file by space and put strings on a vector*/
 vector<string> split(string str){
 	istringstream ss(str);
 	string token;
@@ -33,9 +34,11 @@ int main(int argc, char **argv){
 		return -1;
 	}
 
+	/*the file to read*/
 	ifstream flux(argv[1]);
 
 	if(flux){
+		/*here we create a set so it can only contains unique element. thanks to that the size of the set is the number of nodes in the graph*/
 		set<int> mySet;
 		string line;
 		int nbLine(0),minTime(-1),maxTime(0),duration(0);
@@ -48,6 +51,7 @@ int main(int argc, char **argv){
 						ts(atoi(elts[2].c_str())),
 						te(atoi(elts[3].c_str()));
 
+				/*minTime will be the minimum timestamp, and maxTime the max. Then we substract and we have the duration*/
 				if(minTime == -1)
 					minTime = ts;
 				else
@@ -57,6 +61,7 @@ int main(int argc, char **argv){
 				mySet.insert(n1);
 				mySet.insert(n2);
 			}
+			/*we count every line to display the number of contact observed*/
 			nbLine++;
 		}
 		duration = (maxTime-minTime);

@@ -5,7 +5,7 @@ CXXFLAGS= -O5 -Wall -std=c++11
 
 DIRSRC= ./src/
 
-EXEC=simpleMetrics normalise sortAndSplit interContact averageDegree fractionCreatedDeletedLinks edgeMarkovian
+EXEC=simpleMetrics normalise sortAndSplit interContact averageDegree fractionCreatedDeletedLinks edgeMarkovian ownModel
 
 all: $(EXEC)
 
@@ -29,7 +29,9 @@ fractionCreatedDeletedLinks: $(DIRSRC)FractionCreatedDeletedLinks.cpp
 
 edgeMarkovian: $(DIRSRC)EdgeMarkovian.cpp
 	$(CXX) -o $@ $^ $(CXXFLAGS)
+
+ownModel: $(DIRSRC)OwnModel.cpp
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 	
 clean:
 	rm -f *~ $(EXEC)
-	rm -f data/plots/*.png
