@@ -51,6 +51,8 @@ int main(int argc, char **argv){
 		readFile.seekg(0,ios::beg);
 
 		int nbLinks(0),nbPrevLinks(0),nbC(0),nbS(0),currTs(0);
+
+		writeFile << "#(timestamp) (fraction of created links) (fraction of deleted links)" << endl;
 		
 		while(getline(readFile,line)){
 			vector<string> elts(split(line));
@@ -129,7 +131,7 @@ int main(int argc, char **argv){
 
  	cout << "Average fraction of created links for your graph = " << avgCreated << "\nAverage fraction of deleted links for your graph = " << avgDeleted <<endl;
 
- 	cout << "File data/created_deleted_links.txt created" << endl;
+ 	cout << "\nFile data/created_deleted_links.txt created" << endl;
 
  	readFile.close();
 	writeFile.close();

@@ -31,7 +31,7 @@ vector<string> split(string str){
 
 int main(int argc, char **argv){
 	if(argc != 3){
-		cout << "Usage: " << argv[0] << "" << endl;
+		cout << "Usage: " << argv[0] << "<filename of created and deleted links> <number of nodes>" << endl;
 		return -1;
 	}
 
@@ -61,6 +61,8 @@ int main(int argc, char **argv){
 	/*loop from 0 to timestamp given in args*/
 	while(getline(readFile,line))
 	{
+		if(line.find("#") != string::npos)
+			continue;
 		vector<string> elts(split(line));
 		size_t sz;
 		double p = stod(elts[1],&sz);

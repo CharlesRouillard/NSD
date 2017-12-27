@@ -1,11 +1,11 @@
 set terminal png
-set output 'distribution_created.png'
+set output 'plots/images/distribution_created.png'
 set title 'Distribution of the fraction of created links over time'
 set xlabel 'Time'
 set ylabel 'Fraction of created links'
 plot "data/created_deleted_links.txt" using 1:2 with point notitle
 
-set output 'distribution_deleted.png'
+set output 'plots/images/distribution_deleted.png'
 set title 'Distribution of the fraction of deleted links over time'
 set xlabel 'Time'
 set ylabel 'Fraction of deleted links'

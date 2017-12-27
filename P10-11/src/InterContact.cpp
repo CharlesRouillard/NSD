@@ -82,6 +82,9 @@ int main(int argc, char **argv){
 	map<int,int> distrib;
 	map<int,int>::iterator it;
 
+	writeFileB << "#Pair (a,b) = inter contact associated to this contact" << endl;
+	writeFile << "#(inter contact X) (number of times X is found) " << endl;
+
 	if(readFile){
 		while(getline(readFile,line)){
 			vector<string> elts(split(line));
@@ -98,8 +101,8 @@ int main(int argc, char **argv){
 					int index(m.getIndex());
 					int interTime((m.getTime())-(list[index].getTime()));
 
-					/*write the pair and the intercontact associated in the file*/
-					writeFileB << "Pair (" << m.getPair() << ") - inter contact duration time = " << interTime << endl;
+					/*write the pair and the inter contact associated in the file*/
+					writeFileB << "Pair (" << m.getPair() << ") = " << interTime << endl;
 
 					it = distrib.find(interTime);
 					if(it != distrib.end()){
@@ -120,8 +123,8 @@ int main(int argc, char **argv){
  		cout << "Error while reading the file" << endl;
  	}
 
- 	cout << "File data/inter_contact.txt created. It contains the inter-contact duration time associated to each observed contact" << endl;
- 	cout << "File data/distrib_inter_contact.txt created. It contains the ditribution of ther inter contact duration time" << endl;
+ 	cout << "File data/inter_contact.txt created." << endl;
+ 	cout << "File data/distrib_inter_contact.txt created." << endl;
 
  	list.clear();
  	distrib.clear();

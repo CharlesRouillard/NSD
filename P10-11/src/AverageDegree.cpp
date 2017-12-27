@@ -50,7 +50,10 @@ int main(int argc, char **argv){
 		readFile.seekg(0,ios::beg);
 
 		set<int> mySet;
-		int degree(0),currentTime(0);
+		int degree(0),currentTime(0);	
+
+		writeFile << "#(timestamp) (average degree at this timestamp)" << endl;
+
 		while(getline(readFile,line)){
 			vector<string> elts(split(line));
 

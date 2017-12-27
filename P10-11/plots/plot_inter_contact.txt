@@ -1,5 +1,5 @@
 set terminal png
-set output 'distrib_inter_contact.png'
+set output 'plots/images/distrib_inter_contact.png'
 set title 'Distribution of the Inter Contact Duration Time'
 set xlabel 'Inter contact duration time'
 set ylabel 'Number of inter contact'

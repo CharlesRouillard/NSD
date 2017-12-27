@@ -6,4 +6,5 @@ set ylabel 'Number of times X is found'
 set boxwidth 0.1
 set style fill solid
 set yrange[0:]
+set xtics rotate
 plot 'communities.txt' using 2:xtic(1) with boxes notitle

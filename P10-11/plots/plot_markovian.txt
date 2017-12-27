@@ -1,5 +1,5 @@
 set terminal png
-set output 'evolution_average_degree_markovian.png'
+set output 'plots/images/evolution_average_degree_markovian.png'
 set title 'Evolution of the average degree over time for the Edge Markovian Model'
 set xlabel 'Time t'
 set ylabel 'Average degree for the time t'

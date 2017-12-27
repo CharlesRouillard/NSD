@@ -1,4 +1,4 @@
-package p6;
+//package p6;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,7 +9,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		Node[] tabNode = new Node[400];
 		Node n;
-		double p = 0.3,q = 0.01;
+		double p = 0.4,q = 0.01;
 		BufferedWriter writer = new BufferedWriter(new FileWriter("data/graph.txt"));
 		
 		for(int i = 0;i<400;i++) {
