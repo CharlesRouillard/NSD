@@ -1,6 +1,5 @@
-package p6;
 
-public class LabelNode {
+public class LabelNode implements Comparable<LabelNode> {
 	private int number;
 	private int label;
 	
@@ -9,6 +8,10 @@ public class LabelNode {
 		this.label = label;
 	}
 	
+	public int compareTo(LabelNode ln){
+		return this.label - ln.label;
+	}
+
 	public int getNumber() {
 		return this.number;
 	}
